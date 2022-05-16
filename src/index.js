@@ -1,9 +1,32 @@
-//Here we're importing items we'll need. You can add other imports here.
+import html2canvas from "html2canvas";
 
-//The first function. Remove this.
-const btn = document.querySelector("button");
-btn.onclick = function () {
-  alert("You ran some JavaScript");
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+    ['Year', 'Sales', 'Expenses'],
+    ['2013',  1000,      400],
+    ['2014',  1170,      460],
+    ['2015',  660,       1120],
+    ['2016',  1030,      540]
+  ]);
+
+  var options = {
+    title: 'Company Performance',
+    hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
+    vAxis: {minValue: 0}
+  };
+
+  var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+}
+
+window.saveImage = () => {
+  html2canvas(document.querySelector("#chart_div")).then((canvas) => {
+    const img = canvas.toDataURL("image/png");
+    // console.log(img);
+
+    FileMaker.PerformScriptWithOption("Get Image", JSON.stringify(img), 5);
+  });
 };
-
-//
